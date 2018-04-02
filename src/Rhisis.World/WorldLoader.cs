@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Rhisis.World.Game.Maps;
 
 namespace Rhisis.World
 {
@@ -267,7 +268,7 @@ namespace Rhisis.World
         {
             Logger.Loading("Loading maps...\t\t");
             IEnumerable<Type> systemTypes = this.LoadSystems();
-            IDictionary<string, string> worldsPaths = this.LoadWorldScript();
+            IReadOnlyDictionary<string, string> worldsPaths = this.LoadWorldScript();
 
             foreach (string mapId in this.WorldConfiguration.Maps)
             {
@@ -284,12 +285,17 @@ namespace Rhisis.World
                     continue;
                 }
 
-                Map map = Map.Load(Path.Combine(DataPath, "maps", mapName), mapName, id);
+                IMapInstance map = MapInstance.Create(Path.Combine(DataPath, "maps", mapName), mapName, id);
+
+                map.StartSystemUpdate(100);
+
+
+                //Map map = Map.Load(Path.Combine(DataPath, "maps", mapName), mapName, id);
 
                 foreach (Type type in systemTypes)
-                    map.Context.AddSystem(Activator.CreateInstance(type, map.Context) as ISystem);
+                    map.AddSystem(Activator.CreateInstance(type, map) as ISystem);
 
-                map.Start();
+                //map.Start();
                 _maps.Add(id, map);
             }
 
@@ -305,7 +311,7 @@ namespace Rhisis.World
                 .Where(x => x.GetTypeInfo().GetCustomAttribute<SystemAttribute>() != null && typeof(ISystem).IsAssignableFrom(x));
         }
 
-        private IDictionary<string, string> LoadWorldScript()
+        private IReadOnlyDictionary<string, string> LoadWorldScript()
         {
             var worldsPaths = new Dictionary<string, string>();
 

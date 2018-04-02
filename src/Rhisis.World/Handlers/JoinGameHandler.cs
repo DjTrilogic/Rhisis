@@ -9,6 +9,7 @@ using Rhisis.Database;
 using Rhisis.Database.Structures;
 using Rhisis.World.Game.Components;
 using Rhisis.World.Game.Entities;
+using Rhisis.World.Game.Maps;
 using Rhisis.World.Packets;
 using Rhisis.World.Systems.Inventory;
 
@@ -39,10 +40,10 @@ namespace Rhisis.World.Handlers
                 return;
             }
 
-            var map = WorldServer.Maps[character.MapId];
+            IMapInstance map = WorldServer.Maps[character.MapId];
 
             // 1st: Create the player entity with the map context
-            client.Player = map.Context.CreateEntity<PlayerEntity>();
+            client.Player = map.CreateEntity<PlayerEntity>();
 
             // 2nd: create and initialize the components
             client.Player.Object = new ObjectComponent
