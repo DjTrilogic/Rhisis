@@ -94,11 +94,11 @@ namespace Rhisis.World.Systems.Inventory
 
             player.Inventory = new ItemContainerComponent(MaxItems, InventorySize);
             var inventory = player.Inventory;
-            var dbItems = args.GetArgument<IEnumerable<Database.Structures.Item>>(0);
+            var dbItems = args.GetArgument<IEnumerable<Database.Entities.Item>>(0);
 
             if (dbItems != null)
             {
-                foreach (Database.Structures.Item item in dbItems)
+                foreach (Database.Entities.Item item in dbItems)
                 {
                     int uniqueId = inventory.Items[item.ItemSlot].UniqueId;
 
